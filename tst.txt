@@ -1,2 +1,2 @@
-[('Number_of_data', 7)]
-[('last_update', datetime.date(2022, 12, 8))]
+total records	7
+last update	2022-12-08

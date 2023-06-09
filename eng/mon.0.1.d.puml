@@ -1,0 +1,160 @@
+@startuml
+'https://plantuml.com/deployment-diagram
+
+<style>
+header {
+  HorizontalAlignment right
+}
+</style>
+
+!include <tupadr3/common>
+!include <tupadr3/devicons/linux>
+!include <tupadr3/devicons/ubuntu>
+!include <tupadr3/devicons/windows>
+!include <tupadr3/devicons/android>
+!include <tupadr3/devicons/apple>
+
+!include <cloudinsight/nginx>
+
+!include <tupadr3/devicons/terminal>
+!include <tupadr3/devicons/terminal_badge>
+!include <tupadr3/font-awesome-5/js>
+!include <tupadr3/font-awesome-5/js_square>
+!include <cloudinsight/nodejs>
+!include <cloudinsight/java>
+!include <cloudinsight/python>
+
+!include <tupadr3/font-awesome/database>
+!include <cloudinsight/redis>
+!include <cloudinsight/mongodb>
+!include <cloudinsight/postgresql>
+
+!include <tupadr3/font-awesome-5/file_excel>
+!include <tupadr3/font-awesome/cloud>
+
+header
+
+  | project:  | 22.2.2-mon                |
+  | version:  | 0.1.0                     |
+  | date:     | 2022.12.12                |
+  | updated:  | %date("yyyy.MM.dd HH:mm") |
+
+end header
+
+footer
+
+  © ITMS.PRO, Kira Mubarakzyanova %date("yyyy")
+end footer
+
+title DQM App Components\n
+
+node "<$linux*.4> Back-End Execution Environment" as ee {
+
+  database db [
+    <$postgresql*.4> db
+    --
+    Source Database
+    ..
+    исходная база данных
+    --
+    Data to be analysed
+    ..
+    Данные для анализа
+  ]
+  
+  interface db_cnn [
+    db_cnn
+    --
+    hba.conf
+    |_ readonly user
+    --
+    Access to Database
+    доступ к базе данных
+  ]
+  
+  component api [
+    <$nodejs*.4> api
+    --
+    OAS 3 based REST API
+    --
+    Provides RESTful access
+    analysed data parameters
+    ..
+    Обеспечивает RESTful доступ
+    к анализируемым параметрам
+    данных
+  ]
+  
+  component als [
+    <$python*.4> als
+    --
+    Analyser
+    --
+    Requests database
+    to fill it's parameters
+    report
+    ..
+    запрашивает базу данных
+    для заполнения отчета
+    о своих параметрах
+  ]
+  
+  storage stg [
+    <$file_excel*.4> stg
+    --
+    Analysis Report
+    Storage
+    ..
+    хранение
+    аналитических
+    отчетов
+    --
+    File (JSON, TSV, etc) 
+    or database
+  ]
+  
+  component pxy [
+    <$nginx*.4> pxy
+    --
+    Reverse Proxy
+    ..
+    обратный прокси
+    --
+    Routes public to back-end
+    ..
+    маршрутизация публичных данных
+    на внутренний сервер
+  ]
+  
+  interface if1 [
+    if1
+    --
+    http / https
+  ]
+
+}
+
+node "Browser" as bwr {
+
+  component clt [
+    <$js*.4> clt
+    --
+    Client Application powered by
+    Google Sheets with GScript
+    ..
+    клиентское приложение на основе
+    Google таблиц с GScript
+  ]
+  
+}
+
+db_cnn - db
+db_cnn )-- als
+als - stg
+stg - api
+api -- pxy
+pxy -l- if1
+if1 )-- clt
+
+
+@enduml

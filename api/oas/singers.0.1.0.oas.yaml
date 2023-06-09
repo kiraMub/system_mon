@@ -1,0 +1,141 @@
+openapi: 3.0.0
+info: 
+  title: Магазин пластинок OpenApi спецификация
+  version: 0.1.0
+servers:
+  - url: http://localhost:8080/api/v1/
+    description: Dev server
+paths:
+  /singers:
+    get:
+      summary: Метод получения списка исполнителей
+      tags:
+        - Singer
+      operationId: getAllSingers
+      responses:
+        '200':
+          description: Успешный ответ со списком исполнителей
+          content:
+            application/json:
+              schema: 
+                $ref: "#/components/schemas/Singers"
+              
+        'default':
+         description: Нет таких исполнителей
+         content: 
+          application/json: 
+            schema: 
+              $ref: "#/components/schemas/Error"
+    post: 
+      summary: Метод создания игрушки
+      tags: 
+        - Singers
+      operationId: createSinger
+      requestBody: 
+        required: true
+        content: 
+          application/json: 
+            schema:
+              $ref: "#/components/schemas/Singer"
+      responses:
+        '200':
+          description: Успешный ответ с созданным исполнителем
+          content:
+            application/json:
+              schema: 
+                $ref: "#/components/schemas/Singer"
+              
+        'default':
+         description: Нет такого исполнителя
+         content: 
+          application/json: 
+            schema: 
+              $ref: "#/components/schemas/Error"
+  /singer/{singer_id}:
+    get:
+      summary: Метод получения исполнителя по идентификатору
+      tags:
+        - Singer
+      operationId: getSingerId
+      parameters: 
+       - name: singer_id
+         in: path
+         required: true
+         description: Идентификатор исполнителя
+         schema:
+          type: string
+         example: 1
+      responses:
+        '200':
+          description: Успешный ответ с одним исполнителем
+          content:
+            application/json:
+              schema: 
+                $ref: "#/components/schemas/Singer"
+              
+        'default':
+         description: Нет такого исполнителя
+         content: 
+          application/json: 
+            schema: 
+              $ref: "#/components/schemas/Error"
+    delete: 
+      summary: Метод удаления исполнителя по идентификатору
+      tags: 
+       - Singers
+      operationId: deleteSingerId 
+      parameters: 
+       - name: singer_id
+         in: path
+         required: true
+         description: Идентификатор исполнителя
+         schema:
+          type: string
+         example: 1
+      responses:
+        '200':
+          description: Успешное удаление
+          content:
+            application/json: {}
+        'default':
+         description: Нет такого исполнителя
+         content: 
+          application/json: 
+            schema: 
+              $ref: "#/components/schemas/Error"
+components:
+  schemas:
+    Singer:
+      type: object
+      required:
+       - name
+       - status
+      properties:
+        singer_id:
+          type: string
+          example: 1
+        name:
+          type: string
+          example: Bruno Mars
+        status: 
+          type: string
+          enum:
+           - new
+           - old
+        created_at:
+          type: string
+          format: 2023-03-07
+    Singers:
+      type: array
+      items:
+        $ref: "#/components/schemas/Singer"
+    Error:
+      type: object
+      required: 
+        - code
+        - message
+      properties: 
+        code:
+          type: integer
+        message:
+          type: string

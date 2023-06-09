@@ -1,0 +1,118 @@
+openapi: "3.0.3"
+info:
+  title: 22.2.2-mon Task API
+  description: >
+    This is a 22.2.2-mon API
+  termsOfService: http://api.local/terms.html
+  contact:
+    name: API Support
+    url: http://api.local
+    email: kira1356790@gmail.com
+  license:
+    name: UNLICENSED
+    url: http://api.local/LICENSE-1.0.html
+  version: 0.1.0
+#servers:
+#  - url: 'https://api.local/api/0.1/'
+#  - url: 'http://localhost:18001/'
+paths:
+  /report:
+    get:
+      security:
+        - ApiKeyAuth: [ ]
+      x-router-controller: report
+      tags:
+        - prd
+      summary: Report
+      description: ''
+      operationId: get
+      responses:
+        '200':
+          $ref: '#/components/responses/ResponseDefault'
+        '400':
+          $ref: '#/components/responses/ResponseErrorBadInput'
+        '403':
+          $ref: '#/components/responses/ResponseErrorForbidden'
+        '500':
+          $ref: '#/components/responses/ResponseErrorInternal'
+components:
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-API-KEY
+  schemas:
+    ResponseStatus:
+      type: string
+      default: ne
+      enum:
+        - ne
+        - er
+        - ok
+      description: >
+        - ne  neutral - for strict typing compatibility
+        - er  error 
+        - ok  success
+    DefaultResponse:
+      type: object
+      required:
+        - s
+      properties:
+        s:
+          $ref: '#/components/schemas/ResponseStatus'
+        m:
+          description: message
+          type: string
+        d:
+          description: payload
+          type: object
+      example:
+        summary: An example of a default response
+        value:
+          s: 'ok'
+          m: 'updated successfully'
+          d:
+            statusCode: 0
+    DefaultErrorResponse:
+      type: object
+      required:
+        - s
+      properties:
+        s:
+          type: string
+          default: 'er'
+        m:
+          type: string
+          default: 'Bad Request'
+  responses:
+    ResponseDefault:
+      description: Successful JSON Response
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/DefaultResponse'
+    ResponseErrorDefault:
+      description: Default Error Response
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/DefaultErrorResponse'
+    ResponseErrorBadInput:
+      description: Bad input
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/DefaultErrorResponse'
+    ResponseErrorForbidden:
+      description: Forbidden
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/DefaultErrorResponse'
+    ResponseErrorInternal:
+      description: Internal Server Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/DefaultErrorResponse'
+ 

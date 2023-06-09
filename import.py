@@ -2,6 +2,7 @@ import psycopg2
 from psycopg2.extras import Json
 import json
 import os
+import datetime
 
 # Параметры подключения к базе данных
 DB_NAME = "postgres"
@@ -56,19 +57,5 @@ for filename in os.listdir(json_files_dir):
                 # коммит изменений в базе данных
                 conn.commit()
 # закрытие курсора и соединения с базой данных
-#insert_query1 = "select 'количество данных', count(*)from legal"
-#insert_query2 = "select 'последнее обновление', date_update from legal WHERE date_update=(SELECT MAX(date_update) FROM legal)"
-#def f(insert_query1, insert_query2):
-with open ("tst.txt", "w") as file1:
-    cur.execute ("select 'Number_of_data', count(*)from legal")
-    insert_query1 = str(cur.fetchall())
-    cur.execute("select 'last_update', date_update from legal WHERE date_update=(SELECT MAX(date_update) FROM legal)")
-    insert_query2 = str(cur.fetchall())
-
-    file1.writelines([insert_query1,'\n', insert_query2])
-    file1.close()
-#copy (select '', count(*) from legal union select * from legal WHERE date_update=(SELECT MAX(date_update) FROM legal)) TO 'D:/system_mon/tst.txt';
-#copy (select * from legal WHERE date_update=(SELECT MAX(date_update) FROM legal)) to 'D:/alll1.txt';
-#cur.execute('''copy (select 'последнее обновление', date_update from legal WHERE date_update=(SELECT MAX(date_update) FROM legal)) to 'D:/system_mon/tst.txt';''')
 cur.close()
 conn.close()
